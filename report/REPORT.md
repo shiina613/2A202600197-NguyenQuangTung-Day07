@@ -126,8 +126,9 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 | Thành viên | Strategy | Retrieval Score (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
 | 2A202600197 Nguyễn Quang Tùng | FixedSizeChunker (700/120) | 8.5 | Ổn định, dễ tái lập, top-3 ít nhiễu với query factual | Có thể cắt ngang câu ở vài vị trí |
-| Thành viên A |  |  |  |  |
-| Thành viên B |  |  |  |  |
+| 2A202600027 Đặng Văn Minh | SentenceChunker (6 câu/chunk) | 10.0 | Hit@3 cao trên bộ benchmark, số chunk ít nên chi phí retrieval thấp | Chunk dài có thể thêm nhiễu với query ngắn hoặc quá cụ thể |
+| Nguyễn Thị Quỳnh Trang | RecursiveChunker (chunk_size~420-500) | 8.0 | Giữ mạch đoạn tốt, nổi bật ở câu hỏi tổng hợp đa nguồn | Top-1 đôi lúc chưa trúng ý chính, cần rerank tốt hơn |
+| Đồng Văn Thịnh | Recursive + Keyword Reranking | 7.0 | Tăng khả năng bắt đúng chi tiết kỹ thuật nhờ hậu xử lý từ khóa | Dễ lệch nếu bộ từ khóa chưa phủ đủ, kết quả chưa ổn định giữa query |
 
 **Strategy nào tốt nhất cho domain này? Tại sao?**
 > Với bộ dữ liệu hiện tại và nhóm query benchmark, FixedSizeChunker (chunk lớn + overlap vừa) cho kết quả ổn định nhất ở các câu hỏi factual cần số liệu chính xác. RecursiveChunker có tiềm năng tốt ở các câu hỏi giải thích dài, nhưng trong thử nghiệm nhanh vẫn xuất hiện nhiễu ở top-3. Vì vậy, nhóm có thể dùng FixedSize làm baseline mạnh, sau đó kết hợp filter metadata để tăng precision cho các query khó.
@@ -222,10 +223,10 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 ## 7. What I Learned (5 điểm — Demo)
 
 **Điều hay nhất tôi học được từ thành viên khác trong nhóm:**
-> 
+> Tôi học được cách chọn tiêu chí đánh giá retrieval rõ ràng hơn: không chỉ nhìn top-1 score mà cần theo dõi thêm hit@3 và source coverage. Từ báo cáo của Minh và Trang, tôi thấy cùng một tập dữ liệu nhưng strategy khác nhau sẽ tối ưu cho mục tiêu khác nhau (factual chính xác nhanh vs tổng hợp đa nguồn), nên cần chốt metric trước khi kết luận strategy tốt nhất.
 
 **Điều hay nhất tôi học được từ nhóm khác (qua demo):**
-> 
+> Qua demo nhóm khác, tôi học được việc kết hợp metadata filter theo topic với truy vấn mơ hồ là rất hữu ích khi từ khóa chồng chéo giữa nhiều bài (ví dụ các bài về vệ tinh/không gian). Bài học này giúp tôi định hướng cải tiến pipeline theo hướng filter trước rồi rerank, thay vì chỉ dựa vào semantic similarity thuần túy.
 
 **Nếu làm lại, tôi sẽ thay đổi gì trong data strategy?**
 > Nếu làm lại, tôi sẽ chuẩn hóa metadata chi tiết ngay từ đầu (ví dụ `category=space-tech` tách riêng với `space`) để query cần filter tránh bị nhiễu. Tôi cũng sẽ pre-chunk theo section/heading thay vì chỉ theo độ dài cố định, để các cụm số liệu quan trọng không bị tách khỏi câu giải thích. Cuối cùng, tôi sẽ thêm bước rerank top-k để ưu tiên chunk chứa thực thể và con số khớp truy vấn.
