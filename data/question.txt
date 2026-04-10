@@ -1,0 +1,158 @@
+===================================================================
+BENCHMARK QUERIES — Lab 7: Embedding & Vector Store
+Domain: Tin tức công nghệ & khoa học Việt Nam (tháng 4/2026)
+Nguồn: 8 bài báo trong folder data/
+===================================================================
+
+Hướng dẫn sử dụng:
+- 5 câu hỏi được thiết kế đa dạng để kiểm tra các khía cạnh khác nhau của retrieval
+- Mỗi người trong nhóm chạy cùng 5 câu này với strategy riêng rồi so sánh kết quả
+- Gold Answer là câu trả lời chuẩn để chấm điểm
+
+-------------------------------------------------------------------
+QUERY 1 — Factual Lookup (Trả lời rõ ràng trong 1 đoạn văn)
+-------------------------------------------------------------------
+Câu hỏi:
+  Số lượng thuê bao Starlink tối đa được phép tại Việt Nam là bao nhiêu,
+  và mức giá thuê bao hàng tháng là bao nhiêu?
+
+Gold Answer:
+  Tối đa 600.000 thuê bao (chiếm 1-2% tổng số thuê bao Internet cố định).
+  Giá thuê bao hàng tháng là 85 USD (khoảng 2,2 triệu đồng).
+  Tháng đầu tiên tốn khoảng 435 USD (gồm 350 USD tiền thiết bị + 85 USD cước).
+
+Nguồn chunk:
+  co-quan-quan-ly-se-giam-sat-gia-dich-vu-starlink-tai-viet-nam.txt
+
+Lý do chọn câu này:
+  Câu hỏi có số liệu cụ thể, nằm gọn trong 1-2 câu. Dùng để test liệu
+  chunker có cắt đứt số liệu và câu giải thích ra hai chunk khác nhau không.
+  FixedSizeChunker nhỏ có thể tách "600.000" ra khỏi "85 USD".
+
+-------------------------------------------------------------------
+QUERY 2 — Procedural / How (Cần hiểu cơ chế hoạt động)
+-------------------------------------------------------------------
+Câu hỏi:
+  Kỹ sư NASA đã thiết kế lá cờ Mỹ như thế nào để nó trông như đang bay
+  trên Mặt Trăng dù không có gió?
+
+Gold Answer:
+  Lá cờ được may thêm đường viền dọc mép trên để lồng một thanh kim loại
+  ngang, giúp cờ luôn vươn ra ngang thay vì rủ xuống. Cột cắm cờ cao 2,4 m
+  với các thanh đỡ bằng ống nhôm mạ vàng. Hiệu ứng "gợn sóng" là do thanh
+  ngang không được kéo ra hết cỡ, và các nếp gấp từ chuyến bay 4 ngày.
+
+Nguồn chunk:
+  vu_tru_co_my.txt (phần "Thiết kế lá cờ 'bay'")
+
+Lý do chọn câu này:
+  Câu trả lời nằm rải rác trong nhiều câu liên tiếp, không phải 1 câu duy nhất.
+  Test liệu SentenceChunker hay RecursiveChunker có giữ được đoạn giải thích
+  nguyên vẹn không, hay bị cắt giữa "thanh ngang" và "lý do gợn sóng".
+
+-------------------------------------------------------------------
+QUERY 3 — Conceptual Comparison (Cần tổng hợp, so sánh 2 khái niệm)
+-------------------------------------------------------------------
+Câu hỏi:
+  Công cụ "colleague.skill" và "anti-distillation skill" ở Trung Quốc
+  hoạt động như thế nào, và chúng đối lập nhau ra sao?
+
+Gold Answer:
+  "colleague.skill": Dùng dữ liệu kỹ thuật số của nhân viên (chat, email,
+  tài liệu) để tạo AI Agent với kỹ năng tương tự — về cơ bản là "clone"
+  kỹ năng người lao động.
+  "anti-distillation skill": Làm ngược lại — lấy tệp kỹ năng và xử lý để
+  loại bỏ/thay thế các thông tin quan trọng (quyết định, phán đoán ngữ cảnh,
+  tri thức thực), khiến dữ liệu trở nên vô giá trị với AI, nhưng vẫn trông
+  chuyên nghiệp khi nộp cho cấp quản lý.
+
+Nguồn chunk:
+  cuoc-dau-cua-hai-cong-cu-ai-tai-cong-so-trung-quoc.txt
+
+Lý do chọn câu này:
+  Cả hai khái niệm nằm ở các đoạn khác nhau trong cùng một tài liệu.
+  Retrieval tốt phải lấy được CẢ HAI đoạn vào top-3. Test khả năng
+  của store khi cùng 1 query cần nhiều chunk từ cùng 1 document.
+
+-------------------------------------------------------------------
+QUERY 4 — Filter-Required (Cần metadata filter để trả lời chính xác)
+-------------------------------------------------------------------
+Câu hỏi:
+  Trong các tin tức về vũ trụ và không gian, vệ tinh tư nhân Make in Vietnam
+  VEGAFLY-1 được phóng bằng phương tiện gì, từ đâu, và ai vận hành sứ mệnh?
+
+Gold Answer:
+  VEGAFLY-1 được phóng bằng tên lửa Falcon 9, trong sứ mệnh "Transporter-16"
+  do SpaceX vận hành, từ Căn cứ Lực lượng Không gian Vandenberg (Mỹ),
+  lúc 18h02 ngày 30/3. Sau khi tách khỏi tên lửa, vệ tinh phát tín hiệu đầu
+  tiên được thu tại trạm mặt đất ở Slovenia.
+
+Nguồn chunk:
+  Phóng thành công vệ tinh tư nhân Make in Vietnam.txt
+
+Metadata filter gợi ý:
+  {"topic": "vũ trụ"} hoặc {"category": "space"} — để loại bỏ các tài liệu
+  về Starlink, AI, khởi nghiệp, v.v. và chỉ search trong nhóm tài liệu vũ trụ.
+
+Lý do chọn câu này:
+  Nếu không filter, query "vệ tinh" hoặc "phóng" có thể match cả bài Starlink
+  (cũng nhắc đến "Internet vệ tinh") và bài Artemis II. Filter theo topic giúp
+  tăng precision rõ rệt. Đây là câu dùng để test search_with_filter().
+
+-------------------------------------------------------------------
+QUERY 5 — Hard / Multi-Document (Cần tổng hợp từ nhiều tài liệu)
+-------------------------------------------------------------------
+Câu hỏi:
+  Việt Nam có những chính sách và mục tiêu cụ thể gì để hỗ trợ khởi nghiệp
+  sáng tạo đến năm 2030 và 2045?
+
+Gold Answer:
+  Đến 2030: 5 triệu chủ thể kinh doanh, ít nhất 10.000 startup sáng tạo,
+  top 40 GII, 5 kỳ lân, thị trường vốn mạo hiểm 1,5 tỷ USD,
+  300 không gian/trung tâm đổi mới sáng tạo, 100% cơ sở giáo dục có
+  nội dung khởi nghiệp.
+  Đến 2045: 10% dân số khởi nghiệp, top 30 thế giới về đổi mới sáng tạo,
+  100+ doanh nghiệp trị giá từ 100 triệu USD, thị trường vốn 10 tỷ USD.
+  Chính sách hỗ trợ: miễn 100% phí sở hữu trí tuệ 5 năm đầu, thí điểm
+  "doanh nghiệp một người", miễn kiểm toán 3 năm đầu, thủ tục đăng ký
+  trên môi trường số.
+
+Nguồn chunk:
+  doi_moi_sang_tao_khoi_nghiep.txt + vn-thi-diem-doanh-nghiep-mot-nguoi.txt
+  (cần retrieve chunk từ CẢ HAI tài liệu)
+
+Lý do chọn câu này:
+  Đây là câu khó nhất: gold answer nằm rải rác ở 2 tài liệu khác nhau.
+  Retrieval cần lấy được chunk liên quan từ cả hai. Dùng để test:
+  - Strategy nào chunk tốt hơn để giữ nguyên các con số mục tiêu
+  - Agent có tổng hợp được thông tin từ nhiều nguồn không
+  - Đây cũng là potential failure case: nếu top-3 chỉ có chunk từ 1 tài liệu
+
+===================================================================
+BẢNG TÓM TẮT
+===================================================================
+
+| # | Loại Query          | Tài liệu nguồn                      | Khó | Filter? |
+|---|---------------------|--------------------------------------|-----|---------|
+| 1 | Factual lookup      | Starlink                             | Dễ  | Không   |
+| 2 | Procedural/How      | Cờ Mỹ trên Mặt Trăng                | TB  | Không   |
+| 3 | Conceptual compare  | AI tại công sở Trung Quốc           | TB  | Không   |
+| 4 | Filter-required     | Vệ tinh VEGAFLY-1                   | TB  | CÓ      |
+| 5 | Multi-doc synthesis | Khởi nghiệp (2 tài liệu)            | Khó | Không   |
+
+===================================================================
+GHI CHÚ KHI CHẠY BENCHMARK
+===================================================================
+
+Với mỗi query, ghi lại:
+  - Top-3 chunks được retrieve (tóm tắt 1 câu mỗi chunk)
+  - Score của top-1
+  - Chunk có relevant không? (Yes/Partial/No)
+  - Agent answer có khớp gold answer không?
+
+Dấu hiệu retrieval tốt:
+  Q1: Top-1 phải chứa cả "600.000" VÀ "85 USD" trong cùng một chunk
+  Q2: Top-1 phải giải thích "thanh kim loại ngang" + "không rủ xuống"
+  Q3: Top-3 phải có ít nhất 1 chunk về colleague.skill VÀ 1 về anti-distillation
+  Q4: Sau khi filter topic=vũ trụ, top-1 phải là chunk về VEGAFLY-1, không phải Starlink
+  Q5: Top-3 phải có chunk từ 2 tài liệu khác nhau (startup + one-person enterprise)

@@ -1,0 +1,43 @@
+Cuộc đấu của hai công cụ AI tại công sở Trung Quốc
+
+Hai công cụ AI đang lan truyền ở Trung Quốc đại diện cho hai chiến tuyến, một dùng dữ liệu nhân viên để tạo AI Agent và một tìm cách vô hiệu hóa nội dung huấn luyện.
+
+Một dự án có tên "colleague.skill" đang lan truyền trong giới công sở Trung Quốc. Đây là công cụ AI dùng dấu vết kỹ thuật số của một nhân viên như lịch sử chat, email, tài liệu cùng với các mô tả trong prompt để tạo thành một tác nhân AI (AI Agent) với kỹ năng tương tự.
+
+"Colleague.skill" được chia sẻ miễn phí trên GitHub bởi một người Trung Quốc có biệt danh titanwings. Đầu tháng 4, dự án được 2.000 lượt đánh dấu sao trên Github, tương tự nút like trên mạng xã hội. Đến 9/4, con số này đạt gần 11.000.
+
+Dự án được mô tả giúp mọi người hoàn thiện các công việc mà đồng nghiệp, đối tác nghỉ việc để lại, hoặc giúp nhân viên dễ tiếp quản từ người tiền nhiệm. Dù vậy, một số lo ngại công cụ có thể được các "sếp" tận dụng để tạo AI Agent thay thế lực lượng lao động, trong bối cảnh nhiều công ty Trung Quốc yêu cầu nhân viên lưu lại chi tiết công việc, từ quy trình làm việc, ra quyết định đến quá trình giao tiếp.
+
+[ảnh]
+Công cụ "colleague.skill" được chia sẻ trên Github. Ảnh: Nam Nguyễn
+
+"Colleague.skill" gây lo ngại vì có thể tạo ra bản sao kỹ thuật số của một người nơi công sở khi chưa cho phép. Trên mạng xã hội Trung Quốc, điều này được gọi là "chưng cất kỹ năng", ám chỉ việc biến con người thành một bộ kỹ năng để lưu trữ và sử dụng.
+
+Ngày 3/4, nhà sáng tạo nội dung Deng Xiaoxian đăng video phản đối "chưng cất kỹ năng" và chia sẻ công cụ "anti-distillation skill" (kỹ thuật chống chưng cất).
+
+"Không ai muốn bị biến thành một tệp kỹ năng rồi mất việc. Vậy nên tôi tạo ra cái này", cô nói. "Anti-distillation skill" lấy tệp kỹ năng - dữ liệu chi tiết công việc và giao tiếp mà nhiều nhân viên công sở ở Trung Quốc bị yêu cầu nộp cho cấp quản lý - rồi xử lý để biến thông tin này thành vô giá trị.
+
+Tệp kỹ năng sau khi xử lý sẽ loại bỏ hoặc thay thế các thông tin quan trọng như kinh nghiệm khi ra quyết định, khả năng phán đoán theo ngữ cảnh và các tri thức về công việc - những thông tin AI sẽ tập trung vào để hiểu cách làm việc của một người.
+
+"Anti-distillation.skill" tạo ra hai phiên bản đầu ra. Một bản "sạch" để nộp với cấu trúc chuyên nghiệp, cố tình mơ hồ ở những chỗ quan trọng, và một bản sao lưu riêng tư với tri thức thật để người dùng có thể tự lưu trữ.
+
+Deng Xiaoxian giải thích, phiên bản làm sạch có ba mức độ: nhẹ, trung bình và nặng. Mức nhẹ dành cho những công ty kiểm tra kỹ. Mức nặng dành cho môi trường mà cấp quản lý chỉ muốn hoàn thành thủ tục. "Nếu công ty của bạn chỉ làm cho có, chỉ kiểm tra xem bạn có nộp hay chưa thôi, hãy dùng mức làm sạch dữ liệu nặng", Deng nói.
+
+Công cụ này cũng đang lan truyền mạnh trên GitHub những ngày qua, "đối đầu với "colleague.skill" và cho thấy giới công sở đang quan tâm và bắt đầu tìm cách chống lại quá trình trích xuất tri thức.
+
+[ảnh]
+Nhiều người dùng Trung Quốc xếp hàng cài đặt tác nhân AI OpenClaw hồi tháng 2. Ảnh: Reuters
+
+Nỗi sợ bị AI thay thế đang phổ biến trong lực lượng lao động Trung Quốc. Chủ đề #AIAnxiety (lo ngại về AI) trên nền tảng Xiaohongshu đã thu hút khoảng 2,6 triệu lượt xem. Người dùng chia sẻ những lo lắng như: "Cố gắng theo kịp AI còn mệt hơn cả công việc", hay "Sếp tôi yêu cầu tôi viết mã AI để thay thế một số nhân viên, bao giờ sẽ đến lượt tôi?".
+
+"Cảm giác như đang chơi Squid Game vậy, bạn có thể bị loại bất cứ lúc nào", Lambert Li, nhân viên văn phòng ở Thượng Hải, nói với Rest of World. Li cho biết công ty của mình đã sa thải 30% lực lượng lao động năm 2025, trong đó có những người không thích nghi đủ nhanh với AI.
+
+Theo phân tích của Đại học Bắc Kinh dựa trên hơn một triệu tin tuyển dụng, nhu cầu tìm người ở các vị trí có thể bị AI thay thế như lập trình, biên tập, bán hàng đã giảm mạnh ở Trung Quốc trong giai đoạn 2018-2024.
+
+Trước đó vào tháng 3, AI được đề cập là nguyên nhân hàng đầu gây sa thải ở Mỹ, chiếm một phần tư trong hơn 60.000 trường hợp cắt giảm nhân sự được công bố. Trên toàn cầu, theo khảo sát của Đại học Duke và Cục Dự trữ Liên bang Mỹ trên 750 giám đốc tài chính (CFO), số vụ sa thải được gán cho AI trong năm 2026 được dự báo cao gấp 9 lần so với 2025.
+
+Tuy nhiên, không phải mọi vụ "sa thải vì AI" đều thực sự liên quan đến AI, tức một số trong đó là những đợt điều chỉnh nhân sự vì những lý do khác, nhưng vẫn được gán cho công nghệ này. Ngoài ra, năng lực phán đoán, xác định ngữ cảnh và trực giác là những yếu tố mà đến nay AI vẫn khó sao chép.
+
+Title: Cuộc đấu của hai công cụ AI tại công sở Trung Quốc
+Date: 2026-04-10
+Author: Nam Nguyễn
