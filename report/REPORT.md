@@ -1,7 +1,7 @@
 # Báo Cáo Lab 7: Embedding & Vector Store
 
 **Họ tên:** Nguyễn Quang Tùng
-**Nhóm:** 
+**Nhóm:** E403-09
 **Ngày:** 10/04/2026
 
 ---
@@ -181,10 +181,10 @@ tests/test_solution.py ..........................................               
 | Pair | Sentence A | Sentence B | Dự đoán | Actual Score | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
 | 1 | Starlink có tối đa 600.000 thuê bao tại Việt Nam. | Dịch vụ Starlink được thí điểm với giới hạn 600.000 thuê bao. | high | 0.834 | Đúng |
-| 2 | Kỹ sư NASA dùng thanh ngang để giữ cờ như đang bay. | Lá cờ trên Mặt Trăng có nếp gấp do cách đóng gói khi bay. | high | 0.610 | Đúng |
+| 2 | Kỹ sư NASA dùng thanh ngang để giữ cờ như đang bay. | Lá cờ trên Mặt Trăng có nếp gấp do cách đóng gói khi bay. | meidum | 0.610 | Đúng |
 | 3 | VEGAFLY-1 được phóng bằng Falcon 9. | Thời tiết hôm nay ở Hà Nội khá mát mẻ. | low | 0.161 | Đúng |
 | 4 | Việt Nam đặt mục tiêu top 40 GII vào năm 2030. | Mục tiêu đổi mới sáng tạo đến 2030 gồm vào nhóm 40 GII. | high | 0.797 | Đúng |
-| 5 | Doanh nghiệp một người có thể được miễn kiểm toán 3 năm đầu. | Chính sách mới hỗ trợ startup bằng ưu đãi pháp lý giai đoạn đầu. | high | 0.619 | Đúng |
+| 5 | Doanh nghiệp một người có thể được miễn kiểm toán 3 năm đầu. | Chính sách mới hỗ trợ startup bằng ưu đãi pháp lý giai đoạn đầu. | medium | 0.619 | Đúng |
 
 **Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn nghĩa?**
 > Kết quả bất ngờ nhất là cặp 5: hai câu không trùng nhiều từ khóa bề mặt nhưng vẫn có similarity 0.619, khá cao. Điều này cho thấy embedding không chỉ dựa vào từ giống nhau mà còn bắt được ngữ nghĩa chính sách hỗ trợ khởi nghiệp. Nói cách khác, biểu diễn vector phản ánh “ý nghĩa gần nhau” tốt hơn so với so khớp từ khóa thuần túy.
