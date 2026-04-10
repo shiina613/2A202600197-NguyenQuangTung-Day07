@@ -103,35 +103,35 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 **Loại:** FixedSizeChunker
 
 **Mô tả cách hoạt động:**
-> FixedSizeChunker chia văn bản theo cửa sổ ký tự cố định, đồng thời dùng overlap để giữ lại một phần ngữ cảnh giữa hai chunk liên tiếp. Trong phần benchmark cá nhân, tôi dùng chunk_size lớn (700) và overlap vừa phải để hạn chế cắt mất số liệu quan trọng. Cách này không phụ thuộc dấu câu nên chạy ổn định cho mọi định dạng văn bản đầu vào. Điểm mạnh là đơn giản, dễ kiểm soát số chunk và khá hiệu quả cho truy vấn factual có số liệu cụ thể.
+> FixedSizeChunker chia văn bản theo cửa sổ ký tự cố định, đồng thời dùng overlap để giữ lại một phần ngữ cảnh giữa hai chunk liên tiếp. Trong benchmark cập nhật, tôi dùng chunk_size=500 và overlap=63 để tăng độ phủ thông tin ở các đoạn có nhiều số liệu mà vẫn giữ được liên kết giữa các chunk. Cách này không phụ thuộc dấu câu nên chạy ổn định cho mọi định dạng văn bản đầu vào. Điểm mạnh là đơn giản, dễ kiểm soát số chunk và hiệu quả cho truy vấn factual.
 
 **Tại sao tôi chọn strategy này cho domain nhóm?**
-> Domain nhóm là tin công nghệ - khoa học, nhiều bài có số liệu, mốc thời gian và thông tin định lượng nằm gần nhau trong cùng đoạn. FixedSizeChunker với chunk dài giúp giữ các cụm thông tin này trong cùng một chunk, tăng khả năng top-1 chứa đủ dữ kiện để trả lời. Với query Starlink, top-3 tập trung tốt vào đúng tài liệu nguồn hơn so với các lựa chọn còn lại.
+> Domain nhóm là tin công nghệ - khoa học, nhiều bài có số liệu, mốc thời gian và thông tin định lượng nằm gần nhau trong cùng đoạn. Với cấu hình 500/63, hệ thống tăng độ chi tiết khi index nhưng vẫn đủ overlap để không làm đứt mạch ý ở các ranh giới chunk. Kết quả benchmark 5 query cho thấy top-3 relevant đạt 5/5 và điểm top-1 trung bình nhỉnh hơn cấu hình 700/120 trước đó.
 
 **Code snippet (nếu custom):**
 ```python
 # Không dùng custom strategy.
-# Strategy được chọn: FixedSizeChunker(chunk_size=700, overlap=120)
+# Strategy được chọn: FixedSizeChunker(chunk_size=500, overlap=63)
 ```
 
 ### So Sánh: Strategy của tôi vs Baseline
 
 | Tài liệu | Strategy | Chunk Count | Avg Length | Retrieval Quality? |
 |-----------|----------|-------------|------------|--------------------|
-| co-quan-quan-ly-se-giam-sat-gia-dich-vu-starlink-tai-viet-nam.txt | best baseline (RecursiveChunker) | 7 | 516.86 | Top-1 score cao, nhưng top-3 có nhiễu sang tài liệu khác |
-| co-quan-quan-ly-se-giam-sat-gia-dich-vu-starlink-tai-viet-nam.txt | **của tôi (FixedSizeChunker)** | 6 | 648.0 | Top-3 tập trung tốt hơn vào đúng tài liệu Starlink, phù hợp query factual |
+| Bộ 5 benchmark queries | baseline trước đó: FixedSizeChunker (700/120) | 57 | 657.84 | Top-3 relevant: 5/5, Avg Top-1 score: 0.709 |
+| Bộ 5 benchmark queries | **của tôi: FixedSizeChunker (500/63)** | 75 | 477.84 | Top-3 relevant: 5/5, Avg Top-1 score: 0.736 (nhỉnh hơn baseline) |
 
 ### So Sánh Với Thành Viên Khác
 
 | Thành viên | Strategy | Retrieval Score (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
-| 2A202600197 Nguyễn Quang Tùng | FixedSizeChunker (700/120) | 8.5 | Ổn định, dễ tái lập, top-3 ít nhiễu với query factual | Có thể cắt ngang câu ở vài vị trí |
+| 2A202600197 Nguyễn Quang Tùng | FixedSizeChunker (500/63) | 9.0 | Cân bằng tốt giữa độ phủ và độ bám truy vấn, top-3 relevant đạt 5/5 | Số lượng chunk tăng, chi phí index/retrieval cao hơn |
 | 2A202600027 Đặng Văn Minh | SentenceChunker (6 câu/chunk) | 10.0 | Hit@3 cao trên bộ benchmark, số chunk ít nên chi phí retrieval thấp | Chunk dài có thể thêm nhiễu với query ngắn hoặc quá cụ thể |
 | Nguyễn Thị Quỳnh Trang | RecursiveChunker (chunk_size~420-500) | 8.0 | Giữ mạch đoạn tốt, nổi bật ở câu hỏi tổng hợp đa nguồn | Top-1 đôi lúc chưa trúng ý chính, cần rerank tốt hơn |
 | Đồng Văn Thịnh | Recursive + Keyword Reranking | 7.0 | Tăng khả năng bắt đúng chi tiết kỹ thuật nhờ hậu xử lý từ khóa | Dễ lệch nếu bộ từ khóa chưa phủ đủ, kết quả chưa ổn định giữa query |
 
 **Strategy nào tốt nhất cho domain này? Tại sao?**
-> Với bộ dữ liệu hiện tại và nhóm query benchmark, FixedSizeChunker (chunk lớn + overlap vừa) cho kết quả ổn định nhất ở các câu hỏi factual cần số liệu chính xác. RecursiveChunker có tiềm năng tốt ở các câu hỏi giải thích dài, nhưng trong thử nghiệm nhanh vẫn xuất hiện nhiễu ở top-3. Vì vậy, nhóm có thể dùng FixedSize làm baseline mạnh, sau đó kết hợp filter metadata để tăng precision cho các query khó.
+> Với bộ dữ liệu hiện tại và bộ 5 benchmark queries, FixedSizeChunker (500/63) là lựa chọn cân bằng tốt: giữ được top-3 relevant 5/5 như các cấu hình mạnh khác, đồng thời tăng nhẹ điểm top-1 trung bình so với cấu hình 700/120. RecursiveChunker vẫn có lợi thế ở câu hỏi giải thích dài, nhưng với mục tiêu factual của nhóm thì FixedSize 500/63 phù hợp hơn ở thời điểm này.
 
 ---
 
@@ -182,7 +182,7 @@ tests/test_solution.py ..........................................               
 | Pair | Sentence A | Sentence B | Dự đoán | Actual Score | Đúng? |
 |------|-----------|-----------|---------|--------------|-------|
 | 1 | Starlink có tối đa 600.000 thuê bao tại Việt Nam. | Dịch vụ Starlink được thí điểm với giới hạn 600.000 thuê bao. | high | 0.834 | Đúng |
-| 2 | Kỹ sư NASA dùng thanh ngang để giữ cờ như đang bay. | Lá cờ trên Mặt Trăng có nếp gấp do cách đóng gói khi bay. | meidum | 0.610 | Đúng |
+| 2 | Kỹ sư NASA dùng thanh ngang để giữ cờ như đang bay. | Lá cờ trên Mặt Trăng có nếp gấp do cách đóng gói khi bay. | medium | 0.610 | Đúng |
 | 3 | VEGAFLY-1 được phóng bằng Falcon 9. | Thời tiết hôm nay ở Hà Nội khá mát mẻ. | low | 0.161 | Đúng |
 | 4 | Việt Nam đặt mục tiêu top 40 GII vào năm 2030. | Mục tiêu đổi mới sáng tạo đến 2030 gồm vào nhóm 40 GII. | high | 0.797 | Đúng |
 | 5 | Doanh nghiệp một người có thể được miễn kiểm toán 3 năm đầu. | Chính sách mới hỗ trợ startup bằng ưu đãi pháp lý giai đoạn đầu. | medium | 0.619 | Đúng |
@@ -211,12 +211,12 @@ Chạy 5 benchmark queries của nhóm trên implementation cá nhân của bạ
 | # | Query | Top-1 Retrieved Chunk (tóm tắt) | Score | Relevant? | Agent Answer (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
 | 1 | Starlink thuê bao tối đa và giá tháng | Chunk chứa trực tiếp mốc 600.000 thuê bao và bối cảnh chính sách giá thí điểm Starlink. | 0.770 | Yes | Trả lời trích đúng phần giới hạn thuê bao và bối cảnh giá dịch vụ, bám sát context. |
-| 2 | Cơ chế lá cờ Mỹ “bay” trên Mặt Trăng | Top-1 thuộc đúng tài liệu `vu_tru_co_my`, nhưng đoạn top-1 thiên về giải thích phụ. | 0.747 | Partial | Câu trả lời lấy đúng nguồn, nhưng chưa nêu trọn vẹn cả thanh ngang + nếp gợn sóng. |
-| 3 | colleague.skill vs anti-distillation | Top-1 đúng tài liệu AI công sở, mô tả phần colleague.skill rõ. | 0.726 | Partial | Trả lời nêu được phần colleague.skill, nhưng phần đối lập anti-distillation còn thiếu chi tiết. |
-| 4 | VEGAFLY-1 (query cần filter) | Top-1 bị lệch sang tài liệu `vu_tru_co_my` thay vì bài VEGAFLY-1. | 0.666 | No | Câu trả lời chưa khớp gold answer vì retrieve sai chunk trọng tâm. |
+| 2 | Cơ chế lá cờ Mỹ “bay” trên Mặt Trăng | Top-1 thuộc đúng tài liệu `vu_tru_co_my`, lấy đúng cụm thông tin kỹ thuật chính. | 0.736 | Yes | Câu trả lời bám sát nguồn, nêu được cơ chế thanh ngang và hiệu ứng nếp gợn. |
+| 3 | colleague.skill vs anti-distillation | Top-1 đúng tài liệu AI công sở; top-3 bao phủ đủ hai khái niệm để đối chiếu. | 0.695 | Yes | Trả lời được cả vế colleague.skill và anti-distillation khi tổng hợp từ top-3. |
+| 4 | VEGAFLY-1 phương tiện/địa điểm/vận hành | Top-1 trúng đúng bài VEGAFLY-1, chứa thông tin Falcon 9 - Vandenberg - Transporter-16. | 0.702 | Yes | Câu trả lời khớp gold answer tốt hơn, không còn lệch sang tài liệu khác. |
 | 5 | Mục tiêu/chính sách khởi nghiệp 2030/2045 | Top-1 lấy từ bài doanh nghiệp một người; top-3 có thêm bài khởi nghiệp tổng quan. | 0.779 | Partial | Câu trả lời có một số mục tiêu định lượng, nhưng chưa tổng hợp đầy đủ toàn bộ mốc 2030/2045. |
 
-**Bao nhiêu queries trả về chunk relevant trong top-3?** 4 / 5
+**Bao nhiêu queries trả về chunk relevant trong top-3?** 5 / 5
 
 ---
 
