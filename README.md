@@ -1,7 +1,9 @@
 # Ngày 7 — Nền Tảng Dữ Liệu: Embedding & Vector Store
 
 ---
-
+Họ và tên: Nguyễn Quang Tùng
+Mã học viên: 2A202600197
+Lớp E403
 ## Mục Tiêu
 
 Sau lab này, bạn cần có thể:
